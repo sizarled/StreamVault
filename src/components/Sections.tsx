@@ -127,7 +127,7 @@ export function MoviesSection({ movies }: { movies: MediaItem[] }) {
           {movies.slice(0, 50).map((movie) => (
             <a
               key={movie.id}
-              href={`watch.html?movie=${movie.id}`}
+              href={`#/watch?movie=${movie.id}`}
               className="flex-shrink-0 w-40 snap-start group"
             >
               <div className="relative rounded-xl overflow-hidden shadow-md group-hover:shadow-xl transition-all group-hover:-translate-y-1">
@@ -266,7 +266,7 @@ export function SeriesSection({ series }: { series: MediaItem[] }) {
           {series.slice(0, 50).map((show) => (
             <a
               key={show.id}
-              href={`watch.html?tv=${show.id}`}
+              href={`#/watch?tv=${show.id}`}
               className="flex-shrink-0 w-40 snap-start group"
             >
               <div className="relative rounded-xl overflow-hidden shadow-md group-hover:shadow-xl transition-all group-hover:-translate-y-1">

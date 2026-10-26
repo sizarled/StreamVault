@@ -14,14 +14,40 @@ import {
   SupportSection,
 } from './components/Sections';
 import Footer from './components/Footer';
+import WatchPage from './pages/WatchPage';
 import { fetchTrendingMovies, fetchTrendingTV } from './lib/tmdb';
 
+function getRoute(): { page: string; params: URLSearchParams } {
+  // Check hash-based routing first
+  const hash = window.location.hash;
+  if (hash.startsWith('#/watch')) {
+    const params = new URLSearchParams(hash.split('?')[1] || '');
+    return { page: 'watch', params };
+  }
+  // Check pathname
+  const path = window.location.pathname;
+  if (path === '/watch.html' || path === '/watch') {
+    return { page: 'watch', params: new URLSearchParams(window.location.search) };
+  }
+  return { page: 'home', params: new URLSearchParams() };
+}
+
 export default function App() {
+  const [route, setRoute] = useState(getRoute());
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [movies, setMovies] = useState<any[]>([]);
   const [series, setSeries] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
+  // Listen for hash changes
+  useEffect(() => {
+    const handleHashChange = () => {
+      setRoute(getRoute());
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
   useEffect(() => {
     const loadData = async () => {
@@ -44,6 +70,12 @@ export default function App() {
   const handleLogin = () => setIsLoggedIn(true);
   const handleLogout = () => setIsLoggedIn(false);
 
+  // Watch Page
+  if (route.page === 'watch') {
+    return <WatchPage />;
+  }
+
+  // Home Page
   if (loading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
@@ -75,42 +107,24 @@ export default function App() {
         </div>
       )}
 
-      {/* Sidebar - Desktop always visible, Mobile toggle */}
+      {/* Sidebar */}
       <div className={`${mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 transition-transform duration-300 fixed left-0 top-14 bottom-0 z-40`}>
         <Sidebar isLoggedIn={isLoggedIn} onLogin={handleLogin} onLogout={handleLogout} />
       </div>
 
       {/* Main Content */}
       <main className="lg:ml-64 pt-14">
-        {/* Hero Section */}
         <HeroSection movies={movies} series={series} />
-
-        {/* Features */}
         <FeaturesSection />
-
-        {/* Search */}
         <SearchSection />
-
-        {/* Trending Movies */}
         <MoviesSection movies={movies} />
-
-        {/* IPTV */}
         <IPTVSection />
-
-        {/* Trending Series */}
         <SeriesSection series={series} />
-
-        {/* Membership */}
         <MembershipSection />
-
-        {/* Apps */}
         <AppsSection />
-
-        {/* Support */}
         <SupportSection />
       </main>
 
-      {/* Footer */}
       <div className="lg:ml-64">
         <Footer />
       </div>

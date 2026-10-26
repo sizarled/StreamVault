@@ -47,9 +47,9 @@ export default function HeroSection({ movies, series }: HeroSectionProps) {
 
   const handleItemClick = () => {
     if (item.media_type === 'movie') {
-      window.location.href = `watch.html?movie=${item.id}`;
+      window.location.hash = `/watch?movie=${item.id}`;
     } else {
-      window.location.href = `watch.html?tv=${item.id}`;
+      window.location.hash = `/watch?tv=${item.id}`;
     }
   };
 
